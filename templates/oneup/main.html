@@ -1,0 +1,61 @@
+{% extends "base6.html" %}
+{% block content %}
+<div style="background-image: url('https://res.cloudinary.com/dgb2e2npb/image/upload/v1616501051/BG05_gyg80l.jpg');
+      height: 100vh; background-position: center; background-repeat: no-repeat; background-size: cover;">
+<div style="position:relative; top:25%;">
+<div class="row row-cols-1 row-cols-md-4 g-4">
+  <div class="col">
+    <div class="card">
+      <img src="https://res.cloudinary.com/dgb2e2npb/image/upload/v1616503077/01_Outsourcing_s21e2j.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">아웃소싱</h5>
+        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          <a href="{% url 'oneup:outsourcing' %}" class="btn btn-primary">아웃소싱</a>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <img src="https://res.cloudinary.com/dgb2e2npb/image/upload/v1616503078/02_Production_k1esxq.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">제조공정</h5>
+        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          <a href="{% url 'oneup:manufacture' %}" class="btn btn-success">제조공정</a>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <img src="https://res.cloudinary.com/dgb2e2npb/image/upload/v1616503078/03_Logistics_yhnuwd.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">유 통</h5>
+        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content.</p>
+          <a href="{% url 'oneup:logistics' %}" class="btn btn-info">유통</a>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <img src="https://res.cloudinary.com/dgb2e2npb/image/upload/v1616503323/04_AS_htbtic.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">애프터 서비스</h5>
+        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          <a href="{% url 'oneup:after' %}" class="btn btn-danger">A/S</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+{% endblock %}
+
+
+<!--&lt;!&ndash;<div class="img-fluid" style="background-image: url('https://res.cloudinary.com/dgb2e2npb/image/upload/v1616495167/BG03_df5jno.jpg');&ndash;&gt;-->
+<!--&lt;!&ndash;      height: 100vh; background-position: center; background-repeat: no-repeat; background-size: cover;">&ndash;&gt;-->
+<!--<a href="{% url 'oneup:outsourcing' %}" class="btn btn-primary">아웃소싱</a>-->
+<!--<a href="{% url 'oneup:manufacture' %}" class="btn btn-success">제조공정</a>-->
+<!--<a href="{% url 'oneup:logistics' %}" class="btn btn-info">유통</a>-->
+<!--<a href="{% url 'oneup:after' %}" class="btn btn-danger">A/S</a>-->
+<!--</div>-->

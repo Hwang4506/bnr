@@ -1,0 +1,33 @@
+{% extends "base4.html" %}
+{% block content %}
+<div class="img-fluid" style="background-image: url('https://res.cloudinary.com/dgb2e2npb/image/upload/v1616495167/BG02_seirwp.jpg');
+      height: 100vh; background-position: center; background-repeat: no-repeat; background-size: cover;">
+<div class="container my-3" >
+    <div class="row" >
+        <div class="col-4" style="position:relative; top:120px; margin-left:15%">
+            <h4>로그인</h4>
+        </div>
+        <div class="col-8 text-right" style="position:relative; margin-top:7%; margin-left:20%">
+            <span>또는 <a href="{% url 'common:signup' %}">계정을 만드세요.</a></span>
+        </div>
+    </div>
+    <form method="post" class="post-form" action="{% url 'common:login' %}" style="position:relative; top:50px;">
+        {% csrf_token %}
+        {% include "form_errors.html" %}
+        <div class="form-group">
+            <label for="username" style="margin-left:15%">사용자ID</label>
+            <input type="text" class="form-control" name="username" id="username"
+                   value="{{ form.username.value|default_if_none:'' }}" style="width:700px; margin-left:15%">
+        </div>
+        <div class="form-group">
+            <label for="password" style="margin-left:15%">비밀번호</label>
+            <input type="password" class="form-control" name="password" id="password"
+                   value="{{ form.password.value|default_if_none:'' }}" style="width:700px; margin-left:15%">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-left:15%">로그인</button>
+    </form>
+</div>
+</div>
+
+<!-- Background image -->
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'base5.html' %}
+{% load main_filter %}
+{% block content %}
+<div style="background-image: url('https://res.cloudinary.com/dgb2e2npb/image/upload/v1616503077/BG10_auxbku.jpg');
+      height: 100vh; background-position: center; background-repeat: no-repeat; background-size: cover;">
+<div class="container my-3">
+    <div class="row justify-content-between my-3"> <!-- 양쪽정렬 justify-content-between로 변경 -->
+        <div class="col-2">
+            <select class="form-control so">
+                <option value="logn" {% if so == 'logn' %}selected{% endif %}>제품명순</option>
+                <option value="logsn" {% if so == 'logsn' %}selected{% endif %}>시리얼넘버순</option>
+                <option value="wh" {% if so == 'wh' %}selected{% endif %}>보관창고순</option>
+                <option value="dis" {% if so == 'dis' %}selected{% endif %}>총판순</option>
+                <option value="agen" {% if so == 'agen' %}selected{% endif %}>대리점순</option>
+                <option value="logcu" {% if so == 'logcu' %}selected{% endif %}>고객순</option>
+            </select>
+        </div>
+        <div class="col-4 input-group">
+            <input type="text" class="form-control kw" value="{{ kw|default_if_none:'' }}">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr class="thead-dark">
+            <th>번호</th>
+            <th>제품명</th>
+            <th>시리얼넘버</th>
+            <th>보관창고</th>
+            <th>총판</th>
+            <th>대리점</th>
+            <th>고객</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if logistics_list %}
+        {% for logistics in logistics_list %}
+        <tr>
+            <td>
+                <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
+                {{ logistics_list.paginator.count|sub:logistics_list.start_index|sub:forloop.counter0|add:1 }}
+            </td>
+            <td>{{ logistics.logname }}</td>
+            <td>{{ logistics.logsn }}</td>
+            <td>{{ logistics.wh }}</td>
+            <td>{{ logistics.dis }}</td>
+            <td>{{ logistics.agen }}</td>
+            <td>{{ logistics.logcustom }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="3">데이터가 없습니다.</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+    <a href="{% url 'oneup:log_export' %}" class="btn btn-primary">추출하기</a>
+    <!-- 페이징처리 시작 -->
+    <ul class="pagination justify-content-center">
+        <!-- 이전페이지 -->
+        {% if logistics_list.has_previous %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ logistics_list.previous_page_number }}" href="#">이전</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
+        {% endif %}
+        <!-- 페이지리스트 -->
+        {% for page_number in logistics_list.paginator.page_range %}
+        {% if page_number >= logistics_list.number|add:-5 and page_number <= logistics_list.number|add:5 %}
+            {% if page_number == logistics_list.number %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+            </li>
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+        <!-- 다음페이지 -->
+        {% if logistics_list.has_next %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ logistics_list.next_page_number }}" href="#">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+    <!-- 페이징처리 끝 -->
+</div>
+</div>
+<form id="searchForm" method="get" action="{% url 'oneup:logistics' %}">
+    <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
+    <input type="hidden" id="page" name="page" value="{{ page }}">
+    <input type="hidden" id="so" name="so" value="{{ so }}">
+</form>
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+$(document).ready(function(){
+    $(".page-link").on('click', function() {
+        $("#page").val($(this).data("page"));
+        $("#searchForm").submit();
+    });
+
+    $("#btn_search").on('click', function() {
+        $("#kw").val($(".kw").val());
+        $("#page").val(1);  // 검색버튼을 클릭할 경우 1페이지부터 조회한다.
+        $("#searchForm").submit();
+    });
+
+    $(".so").on('change', function() {
+        $("#so").val($(this).val());
+        $("#page").val(1);
+        $("#searchForm").submit();
+    });
+});
+</script>
+{% endblock %}

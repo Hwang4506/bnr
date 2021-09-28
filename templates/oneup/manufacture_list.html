@@ -1,0 +1,132 @@
+{% extends 'base2.html' %}
+{% load main_filter %}
+{% block content %}
+<div class="img-fluid" style="background-image: url('https://res.cloudinary.com/dgb2e2npb/image/upload/v1616503077/BG08_tcn2pw.jpg');
+      height: 100vh; background-position: center; background-repeat: no-repeat; background-size: cover;">
+<div class="container my-3">
+    <div class="row justify-content-between my-3"> <!-- 양쪽정렬 justify-content-between로 변경 -->
+        <div class="col-2">
+            <select class="form-control so">
+                <option value="recent" {% if so == 'recent' %}selected{% endif %}>최신순</option>
+                <option value="pro" {% if so == 'pro' %}selected{% endif %}>제품명순</option>
+                <option value="mfsn" {% if so == 'mfsn' %}selected{% endif %}>시리얼넘버순</option>
+                <option value="ori" {% if so == 'ori' %}selected{% endif %}>원자재순</option>
+                <option value="half" {% if so == 'half' %}selected{% endif %}>반제품순</option>
+                <option value="work" {% if so == 'work' %}selected{% endif %}>작업자코드순</option>
+                <option value="mfst" {% if so == 'mfst' %}selected{% endif %}>제작상태순</option>
+            </select>
+        </div>
+        <div class="col-4 input-group">
+            <input type="text" class="form-control kw" value="{{ kw|default_if_none:'' }}">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr class="thead-dark">
+            <th>번호</th>
+            <th>제품명</th>
+            <th>시리얼넘버</th>
+            <th>원자재</th>
+            <th>반제품</th>
+            <th>작업자코드</th>
+            <th>제작상태</th>
+            <th>업데이트 일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if manufacture_list %}
+        {% for manufacture in manufacture_list %}
+        <tr>
+            <td>
+                <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
+                {{ manufacture_list.paginator.count|sub:manufacture_list.start_index|sub:forloop.counter0|add:1 }}
+            </td>
+            <td>{{ manufacture.proname }}</td>
+            <td>{{ manufacture.mfsn }}</td>
+            <td>{{ manufacture.origin }}</td>
+            <td>{{ manufacture.halfpro }}</td>
+            <td>{{ manufacture.workercode }}</td>
+            <td>{{ manufacture.mfsta }}</td>
+            <td>{{ manufacture.mfdate }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="3">데이터가 없습니다.</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+    <a href="{% url 'oneup:make_export' %}" class="btn btn-primary">추출하기</a>
+    <!-- 페이징처리 시작 -->
+    <ul class="pagination justify-content-center">
+        <!-- 이전페이지 -->
+        {% if manufacture_list.has_previous %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ manufacture_list.previous_page_number }}" href="#">이전</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
+        {% endif %}
+        <!-- 페이지리스트 -->
+        {% for page_number in manufacture_list.paginator.page_range %}
+        {% if page_number >= manufacture_list.number|add:-5 and page_number <= manufacture_list.number|add:5 %}
+            {% if page_number == manufacture_list.number %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+            </li>
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+        <!-- 다음페이지 -->
+        {% if manufacture_list.has_next %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ manufacture_list.next_page_number }}" href="#">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+    <!-- 페이징처리 끝 -->
+</div>
+</div>
+<form id="searchForm" method="get" action="{% url 'oneup:manufacture' %}">
+    <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
+    <input type="hidden" id="page" name="page" value="{{ page }}">
+    <input type="hidden" id="so" name="so" value="{{ so }}">
+</form>
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+$(document).ready(function(){
+    $(".page-link").on('click', function() {
+        $("#page").val($(this).data("page"));
+        $("#searchForm").submit();
+    });
+
+    $("#btn_search").on('click', function() {
+        $("#kw").val($(".kw").val());
+        $("#page").val(1);  // 검색버튼을 클릭할 경우 1페이지부터 조회한다.
+        $("#searchForm").submit();
+    });
+
+    $(".so").on('change', function() {
+        $("#so").val($(this).val());
+        $("#page").val(1);
+        $("#searchForm").submit();
+    });
+});
+</script>
+{% endblock %}
